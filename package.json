@@ -1,0 +1,16 @@
+{
+  "name": "avaliacoes-jogos-digitais",
+  "version": "1.0.0",
+  "description": "Cadastro e consulta de avaliações de jogos digitais.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": { "dev": "nodemon server.js", "start": "node server.js" },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5",
+    "sanitize-html": "^2.14.0"
+  
+  }
+}

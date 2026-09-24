@@ -1,0 +1,23 @@
+<%- include('../partials/head') %>
+<section class="intro"><span class="eyebrow">Avaliação de jogo</span><h1>Registre sua experiência</h1><p>Selecione o jogo e responda às questões. O campo de bugs é opcional.</p></section>
+<% if (erro) { %><p class="alert"><%= erro %></p><% } %>
+<form action="/avaliacoes" method="post" id="avaliacao-form">
+  <section class="card"><h2>Jogo avaliado</h2><label for="jogo">Selecione o jogo</label><select id="jogo" name="jogo" required><option value="">Selecione um jogo</option><option value="NutriGame" <%= valores.jogo==='NutriGame' ? 'selected' : '' %>>NutriGame</option>
+
+<option value="Explorando as Estações" <%= valores.jogo==='Explorando as Estações' ? 'selected' : '' %>>Explorando as Estações</option>
+
+<option value="Missão Verde" <%= valores.jogo==='Missão Verde' ? 'selected' : '' %>>Missão Verde</option>
+
+<option value="Pra que Serve" <%= valores.jogo==='Pra que Serve' ? 'selected' : '' %>>Pra que Serve</option>
+
+<option value="FonoConnect" <%= valores.jogo==='FonoConnect' ? 'selected' : '' %>>FonoConnect</option>
+
+<option value="Site MaisLudus" <%= valores.jogo==='Site MaisLudus' ? 'selected' : '' %>>Site MaisLudus</option>
+
+<option value="Historietas Divertidas" <%= valores.jogo==='Historietas Divertidas' ? 'selected' : '' %>>Historietas Divertidas</option><option value="Outro" <%= valores.jogo === 'Outro' ? 'selected' : '' %>>Outro jogo</option></select><div id="outro-jogo" hidden><label for="jogoPersonalizado">Nome do outro jogo</label><input id="jogoPersonalizado" name="jogoPersonalizado" type="text" maxlength="120" value="<%= valores.jogoPersonalizado || '' %>"></div></section>
+  <section class="card"><h2>Escala de avaliação</h2><p class="hint">Selecione uma nota de 1 (baixo) a 7 (alto) em cada item.</p><% questoes.forEach((q, i) => { %><fieldset><legend><span class="question-number"><%= i + 1 %></span><%= q.text %></legend><div class="scale"><% for (let n = 1; n <= 7; n++) { %><label><input type="radio" name="<%= q.key %>" value="<%= n %>" required <%= String(valores[q.key]) === String(n) ? 'checked' : '' %>><span><%= n %></span></label><% } %></div></fieldset><% }) %></section>
+  <section class="card"><h2>Questões abertas</h2><label for="beneficios">Quais os principais benefícios ou vantagens de utilizar o jogo para auxiliar a aprendizagem de crianças das séries iniciais?</label><textarea id="beneficios" name="beneficios" required><%= valores.beneficios || '' %></textarea><label for="dificuldades">Quais os principais dificuldades ou desvantagens de utilizar o jogo para auxiliar a aprendizagem de crianças das séries iniciais?</label><textarea id="dificuldades" name="dificuldades" required><%= valores.dificuldades || '' %></textarea><label for="sugestoes">Você possui sugestões de melhoria para o jogo?</label><textarea id="sugestoes" name="sugestoes" required><%= valores.sugestoes || '' %></textarea></section>
+  <section class="card bugs-card"><h2>Bugs</h2><p class="hint">Descreva erros encontrados e, se necessário, insira imagens.</p><div class="toolbar" aria-label="Ferramentas do editor"><button type="button" data-command="bold"><b>Negrito</b></button><button type="button" data-command="italic"><i>Itálico</i></button><button type="button" data-command="insertUnorderedList">Lista</button><label class="image-button">Inserir imagem<input type="file" id="bug-image" accept="image/*"></label></div><div id="bugs-editor" class="editor" contenteditable="true" data-placeholder="Relate os bugs encontrados..."></div><input type="hidden" id="bugs" name="bugs"></section>
+  <button class="button" type="submit">Salvar avaliação de jogo</button>
+</form>
+<%- include('../partials/footer') %>

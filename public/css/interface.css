@@ -1,0 +1,22 @@
+:root { --accent: #136f63; --accent-dark: #0c554c; --surface: #ffffff; --soft: #e9f5f1; }
+body { background: #f5f8f7; }
+header { background: rgba(255,255,255,.94); position: sticky; top: 0; z-index: 2; backdrop-filter: blur(10px); }
+nav { min-height: 72px; }
+nav div { gap: 22px; }
+nav div a:not(.button) { color: #44515f; font-weight: 600; }
+nav div a:not(.button):hover { color: var(--accent); }
+.brand { color: var(--accent-dark); letter-spacing: -.02em; }
+.intro { padding: 12px 0 6px; }
+.eyebrow { display: block; margin-bottom: 6px; color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+h1 { font-size: clamp(1.85rem, 4vw, 2.35rem); letter-spacing: -.035em; }
+.card { box-shadow: 0 8px 28px rgba(20, 56, 52, .06); border-color: #dbe7e3; }
+.button { background: var(--accent); box-shadow: 0 2px 5px rgba(13, 107, 113, .18); transition: transform .15s, background .15s; }
+.button:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.question-number { display: inline-grid; place-items: center; margin-right: 7px; width: 23px; height: 23px; border-radius: 50%; background: var(--soft); color: var(--accent-dark); font-size: .8rem; }
+.bugs-card { border-left: 4px solid #dd7a50; }
+.usability { border-top-color: var(--accent); }
+.usability-section { color: var(--accent-dark); }
+.status-options .status { background: #fff; transition: border-color .15s, background .15s; }
+.status-options .status:has(input:checked) { border-color: var(--accent); background: var(--soft); }
+.badge { color: var(--accent-dark); background: var(--soft); }
+@media (max-width: 600px) { nav div { gap: 14px; font-size: .9rem; } }

@@ -7,6 +7,7 @@ const questionSchema = new mongoose.Schema({
 }, { _id: false });
 
 const avaliacaoSchema = new mongoose.Schema({
+  email: { type: String, required: true, trim: true, lowercase: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   jogo: { type: String, required: true, trim: true, maxlength: 120 },
   respostasEscala: { type: [questionSchema], validate: [(items) => items.length === 13, 'Informe todas as 13 questões de escala.'] },
   beneficios: { type: String, required: true, trim: true, maxlength: 5000 },

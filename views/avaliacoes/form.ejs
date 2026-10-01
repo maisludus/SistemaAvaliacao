@@ -2,6 +2,7 @@
 <section class="intro"><span class="eyebrow">Avaliação de jogo</span><h1>Registre sua experiência</h1><p>Selecione o jogo e responda às questões. O campo de bugs é opcional.</p></section>
 <% if (erro) { %><p class="alert"><%= erro %></p><% } %>
 <form action="/avaliacoes" method="post" id="avaliacao-form">
+  <section class="card"><h2>Identificação da avaliação</h2><label for="email">Seu e-mail</label><input id="email" name="email" type="email" required value="<%= valores.email || '' %>" placeholder="voce@exemplo.com"></section>
   <section class="card"><h2>Jogo avaliado</h2><label for="jogo">Selecione o jogo</label><select id="jogo" name="jogo" required><option value="">Selecione um jogo</option><option value="NutriGame" <%= valores.jogo==='NutriGame' ? 'selected' : '' %>>NutriGame</option>
 
 <option value="Explorando as Estações" <%= valores.jogo==='Explorando as Estações' ? 'selected' : '' %>>Explorando as Estações</option>

@@ -7,6 +7,7 @@ const respostaSchema = new mongoose.Schema({
 }, { _id: false });
 
 const avaliacaoSUSSchema = new mongoose.Schema({
+  email: { type: String, required: true, trim: true, lowercase: true, match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
   sistema: { type: String, required: true, trim: true, maxlength: 500 },
   respostas: { type: [respostaSchema], validate: [(items) => items.length === 10, 'Informe os 10 itens da Escala SUS.'] },
   pontuacaoSUS: { type: Number, required: true, min: 0, max: 100 },

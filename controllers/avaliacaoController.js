@@ -26,9 +26,9 @@ exports.criar = async (req, res, next) => {
     const avaliacao = await Avaliacao.create({ ...req.body, jogo, bugs, respostasEscala });
     res.redirect(`/avaliacoes/${avaliacao.id}`);
   } catch (error) {
-    if (error.name === 'ValidationError') return res.status(422).render('avaliacoes/form', { title: 'Avaliar jogo', questoes, valores: req.body, erro: 'Revise os campos obrigatórios e informe uma nota de 1 a 7 em todas as questões.' });
+    if (error.name === 'ValidationError') return res.status(422).render('avaliacoes/form', { title: 'Avaliar jogo', questoes, valores: req.body, erro: 'Informe um e-mail válido e revise os campos obrigatórios, incluindo as notas de 1 a 7.' });
     next(error);
   }
 };
-exports.listar = async (req, res, next) => { try { res.render('avaliacoes/lista', { title: 'Avaliações', avaliacoes: await Avaliacao.find().sort({ createdAt: -1 }).lean() }); } catch (e) { next(e); } };
+exports.listar = async (req, res, next) => { try { const email = req.query.email?.trim().toLowerCase() || ''; const filtro = email ? { email } : {}; const [avaliacoes, emails] = await Promise.all([Avaliacao.find(filtro).sort({ createdAt: -1 }).lean(), Avaliacao.distinct('email')]); res.render('avaliacoes/lista', { title: 'Avaliações de jogos realizadas', avaliacoes, emails: emails.filter(Boolean).sort(), email }); } catch (e) { next(e); } };
 exports.ver = async (req, res, next) => { try { const avaliacao = await Avaliacao.findById(req.params.id).lean(); if (!avaliacao) return res.status(404).render('404', { title: 'Avaliação não encontrada' }); res.render('avaliacoes/detalhe', { title: 'Avaliação', avaliacao }); } catch (e) { next(e); } };

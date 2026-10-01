@@ -12,7 +12,6 @@
 
 <option value="FonoConnect" <%= valores.jogo==='FonoConnect' ? 'selected' : '' %>>FonoConnect</option>
 
-<option value="Site MaisLudus" <%= valores.jogo==='Site MaisLudus' ? 'selected' : '' %>>Site MaisLudus</option>
 
 <option value="Historietas Divertidas" <%= valores.jogo==='Historietas Divertidas' ? 'selected' : '' %>>Historietas Divertidas</option><option value="Outro" <%= valores.jogo === 'Outro' ? 'selected' : '' %>>Outro jogo</option></select><div id="outro-jogo" hidden><label for="jogoPersonalizado">Nome do outro jogo</label><input id="jogoPersonalizado" name="jogoPersonalizado" type="text" maxlength="120" value="<%= valores.jogoPersonalizado || '' %>"></div></section>
   <section class="card"><h2>Escala de avaliação</h2><p class="hint">Selecione uma nota de 1 (baixo) a 7 (alto) em cada item.</p><% questoes.forEach((q, i) => { %><fieldset><legend><span class="question-number"><%= i + 1 %></span><%= q.text %></legend><div class="scale"><% for (let n = 1; n <= 7; n++) { %><label><input type="radio" name="<%= q.key %>" value="<%= n %>" required <%= String(valores[q.key]) === String(n) ? 'checked' : '' %>><span><%= n %></span></label><% } %></div></fieldset><% }) %></section>

@@ -1,26 +1,33 @@
-const AvaliacaoUsabilidade = require('../models/AvaliacaoUsabilidade');
+const AvaliacaoSUS = require('../models/AvaliacaoSUS');
 
-const questoes = [
-  { secao: '1. Acesso e Descoberta dos Jogos', key: 'cardClicavel', pergunta: 'O card/imagem do jogo é totalmente clicável ou exige clicar em um texto pequeno?', opcoes: [['OK', 'Card 100% clicável'], ['Alerta', 'Exige clique preciso'], ['Ruim', 'Ruim/Confuso']], placeholder: 'Observações sobre a área de clique...' },
-  { secao: '1. Acesso e Descoberta dos Jogos', key: 'feedbackHover', pergunta: 'Há feedback visual ou sonoro claro ao passar o mouse (hover) sobre o jogo?', opcoes: [['OK', 'Sim (brilha, aumenta ou tem som)'], ['Não', 'Não muda nada']], placeholder: 'Observações sobre o efeito hover...' },
-  { secao: '2. Início do Jogo (O Fluxo)', key: 'botaoPlay', pergunta: 'O botão "Jogar / Play" é grande, centralizado e fácil de achar após o carregamento?', opcoes: [['OK', 'Sim, muito óbvio'], ['Alerta', 'Dividido com anúncios/outros botões'], ['Ruim', 'Difícil de encontrar']], placeholder: 'Observações sobre o botão Play...' },
-  { secao: '2. Início do Jogo (O Fluxo)', key: 'carregamento', pergunta: 'O tempo de carregamento é aceitável (menos de 3 segundos) ou exibe tela preta sem aviso?', opcoes: [['OK', 'Carrega rápido / Tela lúdica'], ['Ruim', 'Tela preta estática / Demorado']], placeholder: 'Observações sobre o carregamento...' },
-  { secao: '3. Controles e Jogabilidade', key: 'leituraIntuitiva', pergunta: 'O site exige leituras para acessar os jogos ou é intuitivo, explicado por áudio e/ou íconografia clara?', opcoes: [['OK', 'Intuitivo / Áudio ou iconografia clara'], ['Alerta', 'Texto curto'], ['Ruim', 'Muito texto (bloqueia quem não lê)']], placeholder: 'Observações sobre a dependência de leitura...' },
-  { secao: '3. Controles e Jogabilidade', key: 'mecanicaDesktop', pergunta: 'Como funciona a mecânica no desktop? (Exigência de precisão do mouse)', opcoes: [['OK', 'Cliques fáceis e alvos grandes'], ['Alerta', 'Arrastar rígido / Cliques muito pequenos']], placeholder: 'Observações sobre mouse e teclado...' },
-  { secao: '3. Controles e Jogabilidade', key: 'responsividadeCelular', pergunta: 'Como funciona a mecânica no celular? (Responsividade)', opcoes: [['OK', 'Redimensionamento adequado'], ['Alerta', 'Cliques pequenos / Dificuldade de navegação'], ['Ruim', 'Navegação impossível ou muito comprometida']], placeholder: 'Observações sobre o uso no celular...' },
-  { secao: '4. Saída e Fuga', key: 'saidaJogo', pergunta: 'É fácil e óbvio sair dos jogos sem usar as setas do navegador ou a tecla ESC?', opcoes: [['OK', 'Sim'], ['Ruim', 'Não']], placeholder: 'Observações sobre a saída do jogo...' }
+const itensSUS = [
+  'Eu acho que gostaria de utilizar este sistema com frequência.',
+  'Eu achei o sistema desnecessariamente complexo.',
+  'Eu achei o sistema fácil de usar.',
+  'Eu acho que precisaria de ajuda de uma pessoa com conhecimentos técnicos para usar o sistema.',
+  'Eu achei que as várias funções deste sistema estavam muito bem integradas.',
+  'Eu achei que havia muita inconsistência neste sistema.',
+  'Eu imagino que as pessoas aprenderão como usar este sistema rapidamente.',
+  'Eu achei o sistema muito complicado de usar.',
+  'Eu me senti muito confiante ao usar o sistema.',
+  'Eu precisei aprender várias coisas novas antes de conseguir usar o sistema.'
 ];
 
-exports.nova = (req, res) => res.render('usabilidade/form', { title: 'Avaliar usabilidade do site', questoes, valores: {}, erro: null });
+function calcularPontuacao(respostas) {
+  const total = respostas.reduce((soma, resposta, indice) => soma + (indice % 2 === 0 ? resposta.valor - 1 : 5 - resposta.valor), 0);
+  return total * 2.5;
+}
+
+exports.nova = (req, res) => res.render('usabilidade/form', { title: 'Escala SUS', itensSUS, valores: {}, erro: null });
 exports.criar = async (req, res, next) => {
   try {
-    const respostas = questoes.map(({ key, secao, pergunta }) => ({ key, secao, pergunta, status: req.body[`item_${key}_status`], observacao: req.body[`item_${key}_observacao`] }));
-    const avaliacao = await AvaliacaoUsabilidade.create({ urlOuNomeJogo: req.body.urlOuNomeJogo, respostas, bugsTecnicos: req.body.bugsTecnicos });
+    const respostas = itensSUS.map((texto, indice) => ({ numero: indice + 1, texto, valor: Number(req.body[`sus_${indice + 1}`]) }));
+    const avaliacao = await AvaliacaoSUS.create({ sistema: req.body.sistema, respostas, pontuacaoSUS: calcularPontuacao(respostas), observacoes: req.body.observacoes });
     res.redirect(`/usabilidade/${avaliacao.id}`);
   } catch (error) {
-    if (error.name === 'ValidationError') return res.status(422).render('usabilidade/form', { title: 'Avaliar usabilidade do site', questoes, valores: req.body, erro: 'Revise os campos obrigatórios e responda todos os itens de usabilidade.' });
+    if (error.name === 'ValidationError') return res.status(422).render('usabilidade/form', { title: 'Escala SUS', itensSUS, valores: req.body, erro: 'Informe o sistema avaliado e responda todos os 10 itens.' });
     next(error);
   }
 };
-exports.listar = async (req, res, next) => { try { res.render('usabilidade/lista', { title: 'Avaliações de usabilidade', avaliacoes: await AvaliacaoUsabilidade.find().sort({ createdAt: -1 }).lean() }); } catch (error) { next(error); } };
-exports.ver = async (req, res, next) => { try { const avaliacao = await AvaliacaoUsabilidade.findById(req.params.id).lean(); if (!avaliacao) return res.status(404).render('404', { title: 'Avaliação não encontrada' }); res.render('usabilidade/detalhe', { title: 'Avaliação de usabilidade', avaliacao }); } catch (error) { next(error); } };
+exports.listar = async (req, res, next) => { try { res.render('usabilidade/lista', { title: 'Escala SUS', avaliacoes: await AvaliacaoSUS.find().sort({ createdAt: -1 }).lean() }); } catch (error) { next(error); } };
+exports.ver = async (req, res, next) => { try { const avaliacao = await AvaliacaoSUS.findById(req.params.id).lean(); if (!avaliacao) return res.status(404).render('404', { title: 'Avaliação não encontrada' }); res.render('usabilidade/detalhe', { title: 'Escala SUS', avaliacao }); } catch (error) { next(error); } };

@@ -7,7 +7,7 @@ Aplicação MVC em Node.js para cadastrar, consultar e visualizar avaliações d
 - Campo de seleção para o jogo avaliado (inclui ArrasT-EA e a opção de informar outro jogo), sem identificação de usuário ou termo de consentimento.
 - 13 perguntas de avaliação em escala de 1 a 7.
 - As três perguntas abertas do formulário: benefícios, dificuldades e sugestões.
-- Avaliação de usabilidade infantil do site em fluxo independente, com oito verificações de acesso, início, controles, responsividade e saída, além de observações e relatório técnico.
+- Escala SUS (System Usability Scale) em português, em fluxo independente, com os 10 itens, pontuação automática de 0 a 100 e campo opcional de observações.
 - Campo **Bugs** com editor de texto rico e inserção de imagens. As imagens são incorporadas ao registro, sem depender de uma pasta pública.
 - Listagem cronológica e página individual de cada avaliação.
 - A pergunta sobre conhecimento/uso de jogos digitais foi removida, conforme solicitado.
@@ -35,7 +35,7 @@ Aplicação MVC em Node.js para cadastrar, consultar e visualizar avaliações d
 
 4. Abra `http://localhost:3000`.
 
-O cadastro e consulta de avaliações de jogos ficam em `http://localhost:3000/avaliacoes`. A avaliação de usabilidade do site é independente e fica em `http://localhost:3000/usabilidade`.
+O cadastro e consulta de avaliações de jogos ficam em `http://localhost:3000/avaliacoes`. A Escala SUS fica em `http://localhost:3000/usabilidade`.
 
 Para produção, use `npm start`.
 

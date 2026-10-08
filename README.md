@@ -53,3 +53,7 @@ public/       CSS e JavaScript do editor de Bugs
 ## Segurança e limite de imagens
 
 O conteúdo HTML de Bugs é sanitizado antes de ser salvo. Como as imagens são guardadas no próprio documento como base64, o tamanho máximo aceito pelo servidor é 15 MB por envio; para imagens grandes ou muitos anexos, prefira reduzir a imagem antes de inseri-la ou evoluir o projeto para armazená-las em serviço de arquivos (por exemplo, S3/Cloudinary).
+
+## Resultado SUS
+
+O cálculo ajusta os itens ímpares (nota − 1) e pares (5 − nota), soma os 10 valores e multiplica por 2,5. A lista e o detalhe exibem a interpretação: abaixo de 50, baixa; de 50 a 70 inclusive, aceitável; acima de 70 até 85 inclusive, boa; acima de 85, excelente. A interpretação também aparece nos registros existentes, sem alterar os dados salvos.

@@ -1,4 +1,5 @@
 const AvaliacaoSUS = require('../models/AvaliacaoSUS');
+const { calcularPontuacao, interpretarPontuacao } = require('../utils/sus');
 
 const itensSUS = [
   'Eu acho que gostaria de utilizar este sistema com frequência.',
@@ -13,11 +14,6 @@ const itensSUS = [
   'Eu precisei aprender várias coisas novas antes de conseguir usar o sistema.'
 ];
 
-function calcularPontuacao(respostas) {
-  const total = respostas.reduce((soma, resposta, indice) => soma + (indice % 2 === 0 ? resposta.valor - 1 : 5 - resposta.valor), 0);
-  return total * 2.5;
-}
-
 exports.nova = (req, res) => res.render('usabilidade/form', { title: 'Escala SUS', itensSUS, valores: {}, erro: null });
 exports.criar = async (req, res, next) => {
   try {
@@ -29,5 +25,5 @@ exports.criar = async (req, res, next) => {
     next(error);
   }
 };
-exports.listar = async (req, res, next) => { try { const email = req.query.email?.trim().toLowerCase() || ''; const filtro = email ? { email } : {}; const [avaliacoes, emails] = await Promise.all([AvaliacaoSUS.find(filtro).sort({ createdAt: -1 }).lean(), AvaliacaoSUS.distinct('email')]); res.render('usabilidade/lista', { title: 'Avaliações SUS realizadas', avaliacoes, emails: emails.filter(Boolean).sort(), email }); } catch (error) { next(error); } };
-exports.ver = async (req, res, next) => { try { const avaliacao = await AvaliacaoSUS.findById(req.params.id).lean(); if (!avaliacao) return res.status(404).render('404', { title: 'Avaliação não encontrada' }); res.render('usabilidade/detalhe', { title: 'Escala SUS', avaliacao }); } catch (error) { next(error); } };
+exports.listar = async (req, res, next) => { try { const email = req.query.email?.trim().toLowerCase() || ''; const filtro = email ? { email } : {}; const [avaliacoes, emails] = await Promise.all([AvaliacaoSUS.find(filtro).sort({ createdAt: -1 }).lean(), AvaliacaoSUS.distinct('email')]); res.render('usabilidade/lista', { title: 'Avaliações SUS realizadas', avaliacoes, interpretarPontuacao, emails: emails.filter(Boolean).sort(), email }); } catch (error) { next(error); } };
+exports.ver = async (req, res, next) => { try { const avaliacao = await AvaliacaoSUS.findById(req.params.id).lean(); if (!avaliacao) return res.status(404).render('404', { title: 'Avaliação não encontrada' }); res.render('usabilidade/detalhe', { title: 'Escala SUS', avaliacao, interpretacao: interpretarPontuacao(avaliacao.pontuacaoSUS) }); } catch (error) { next(error); } };
